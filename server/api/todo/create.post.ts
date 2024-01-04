@@ -5,7 +5,7 @@ import { todoCreateSchema } from "~/server/validation";
 // Create an instance of the Prisma client
 const prisma = new PrismaClient();
 
-// Define an event handler for user login
+// Define an event handler for todo
 export default defineEventHandler(
   async (
     req
@@ -17,13 +17,13 @@ export default defineEventHandler(
   }> => {
     try {
       // Read data from the request body
-      const reqData: any = await readBody(req); // You may need to replace 'any' with the actual type
+      const reqData: any = await readBody(req); 
 
-      const headers: any = getRequestHeaders(req); // You may need to replace 'any' with the actual type
+      const headers: any = getRequestHeaders(req); 
 
       // Validate the request data using the defined schema
       const { value, error }: { value: any; error: any } =
-        await todoCreateSchema.validate(reqData); // You may need to replace 'any' with the actual type
+        await todoCreateSchema.validate(reqData); 
 
       if (error) {
         // If validation fails, throw a client error
