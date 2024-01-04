@@ -1,10 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+import { verifyToken } from "~/server/utils/session";
 
 export default defineEventHandler(async (req) => {
   try {
-    const headers = req.headers;
+    // Get all request headers
+    const headers = getRequestHeaders(req);
+
     const url = getRequestURL(req);
 
     // Extract the path from the URL
@@ -26,17 +29,13 @@ export default defineEventHandler(async (req) => {
         });
       }
 
-      // Extract the token from the authorization header
-      const token = authorizationHeader.replace("Bearer ", "");
-
       // Verify the token
-      const decodedToken = await verifyToken(token);
+      const decodedToken = await verifyToken(authorizationHeader);
 
       // Check if the user is authenticated (you may want to add additional checks)
       const authenticatedUser = await prisma.token.findFirst({
         where: {
           user_id: decodedToken.id,
-          token,
           is_deleted: false,
         },
       });
@@ -51,7 +50,7 @@ export default defineEventHandler(async (req) => {
     }
 
     // Continue to the next middleware or handler
-  } catch (error) {
+  } catch (error: any) {
     throw createError({
       message: error.message || "Authentication error",
       statusCode: error.statusCode || 500,
