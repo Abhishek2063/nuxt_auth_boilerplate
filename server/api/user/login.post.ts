@@ -99,7 +99,13 @@ export default defineEventHandler(async (req) => {
     }
 
     // Return a success response with the created user and token details
-    return { message: "User login successful", user: existingUser, token };
+    return {
+      message: "User login successful",
+      user: existingUser,
+      token,
+      success: true,
+      statusCode: 200,
+    };
   } catch (error: any) {
     // Handle any errors that occur during the process and return a client error
     throw createError({
